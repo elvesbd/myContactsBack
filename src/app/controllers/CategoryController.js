@@ -39,7 +39,7 @@ class CategoryController {
     }
 
     const category = await CategoriesRepository.update(id, { name });
-    response.json(category);
+    response.status(201).json(category);
   }
 
   async delete(request, response) {
