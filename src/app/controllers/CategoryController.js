@@ -29,9 +29,9 @@ class CategoryController {
   async update(request, response) {
     const { id } = request.params;
     const { name } = request.body;
-    const categorieExist = await CategoriesRepository.findById(id);
+    const categoryExist = await CategoriesRepository.findById(id);
 
-    if (!categorieExist) {
+    if (!categoryExist) {
       return response.status(404).json({ error: 'Category not found' });
     }
     if (!name) {
