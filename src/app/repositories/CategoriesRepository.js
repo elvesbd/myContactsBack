@@ -1,38 +1,44 @@
-const db = require('../../database');
+const db = require("../../database");
 
 class CategoriesRepository {
   async findAll() {
-    const rows = await db.query('SELECT * FROM categories ORDER BY name');
-    return rows;
+    return db.query("SELECT * FROM categories ORDER BY name");
   }
 
   async findById(id) {
-    const [rows] = await db.query('SELECT * FROM categories WHERE id = $1', [id]);
+    const [rows] = await db.query("SELECT * FROM categories WHERE id = $1", [
+      id,
+    ]);
     return rows;
   }
 
   async create({ name }) {
-    const [row] = await db.query(`
+    const [row] = await db.query(
+      `
       INSERT INTO categories(name)
       VALUES($1)
       RETURNING *
-    `, [name]);
+    `,
+      [name]
+    );
     return row;
   }
 
   async update(id, { name }) {
-    const [row] = await db.query(`
+    const [row] = await db.query(
+      `
       UPDATE categories
       SET name = $1
       WHERE id = $2
       RETURNING *
-    `, [name, id]);
+    `,
+      [name, id]
+    );
     return row;
   }
 
   async delete(id) {
-    const deleteCt = await db.query(`DELETE FROM categories WHERE id = $1`, [id]);
-    return deleteCt;
+    return db.query(`DELETE FROM categories WHERE id = $1`, [id]);
   }
 }
 
