@@ -1,4 +1,5 @@
 const ContactsRepository = require("../repositories/ContactsRepository");
+const isValidUUID = require("../utils/isValidUUID");
 
 class ContactController {
   async index(request, response) {
@@ -9,6 +10,11 @@ class ContactController {
 
   async show(request, response) {
     const { id } = request.params;
+
+    if(!isValidUUID(id)) {
+      return response.status(400).json({ error: `O ID ${id} não é um id válido.` });
+    }
+
     const contact = await ContactsRepository.findById(id);
 
     if (!contact) {
@@ -44,17 +50,21 @@ class ContactController {
   async update(request, response) {
     const { id } = request.params;
     const { name, email, phone, category_id } = request.body;
-    const contactExists = await ContactsRepository.findById(id);
 
+    if(!isValidUUID(id)) {
+      return response.status(400).json({ error: `O ID ${id} não é um id válido.` });
+    }
+
+    const contactExists = await ContactsRepository.findById(id);
     if (!contactExists) {
       return response.status(404).json({ error: "User not found" });
     }
+
     if (!name) {
       return response.status(404).json({ error: "Name is required" });
     }
 
     const contactByEmail = await ContactsRepository.findByEmail(email);
-
     if (contactByEmail && contactByEmail.id !== id) {
       return response.status(400).json({ error: "This e-mail already in use" });
     }
