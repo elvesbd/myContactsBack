@@ -47,7 +47,7 @@ class ContactController {
       name,
       email: email || null,
       phone,
-      category_id: category.id || null,
+      category_id: category_id || null,
     });
     response.status(201).json(contact);
   }
@@ -60,13 +60,17 @@ class ContactController {
       return response.status(400).json({ error: `The ID ${id} is not a valid.` });
     }
 
+    if(category_id && !isValidUUID(category_id)) {
+      return response.status(400).json({ error: `the ${category_id} is not a valid.` });
+    }
+
     if (!name) {
       return response.status(404).json({ error: "Name is required" });
     }
 
     const contactExists = await ContactsRepository.findById(id);
     if (!contactExists) {
-      return response.status(404).json({ error: "User not found" });
+      return response.status(404).json({ error: "Contact not found" });
     }
 
     if (email) {
